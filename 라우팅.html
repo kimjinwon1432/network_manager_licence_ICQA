@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>라우팅 (대소문자 구분) - 명령어 퀴즈</title>
+<style>
+  body { font-family: "Malgun Gothic", "Apple SD Gothic Neo", sans-serif; background:#f4f4f4; padding:20px; }
+  table { border-collapse: collapse; width: 100%; max-width: 1000px; margin: 0 auto; background:#fff; table-layout: fixed; }
+  caption { font-size: 22px; font-weight: bold; padding: 14px; border: 2px solid #000; border-bottom:none; }
+  td, th { border: 1px solid #333; text-align: center; vertical-align: middle; padding: 6px 8px; font-size: 13px; }
+  .vert { writing-mode: vertical-rl; font-weight: bold; width: 30px; }
+  .kr { color: #c0006e; font-size: 12px; }
+  .cmd { color: #c0006e; font-weight: bold; }
+  .blue { color:#1a4fcc; }
+  .exi { color:#1a4fcc; font-weight:bold; }
+  .spoiler {
+    background:#333; color:#333; border-radius:4px; padding:1px 4px;
+    cursor:pointer; user-select:none; transition:0.15s;
+  }
+  .spoiler.revealed { background:#eef7ff; color:#1a4fcc; }
+  .hint { font-size:10px; color:#888; margin-top:20px; text-align:center; }
+
+  .section-title { max-width:1000px; margin: 40px auto 14px; font-size:20px; font-weight:bold; border-bottom:3px solid #333; padding-bottom:8px; }
+  .prob { max-width:1000px; margin: 0 auto 18px; background:#fff; border:1px solid #ccc; border-radius:6px; padding:14px 18px; }
+  .prob-title { font-weight:bold; font-size:14px; margin-bottom:8px; }
+  .prob-context { color:#1a4fcc; font-size:12px; background:#f3f6ff; border-left:3px solid #1a4fcc; padding:6px 10px; margin-bottom:10px; white-space:pre-line; }
+  .cmd-block { font-family: Consolas, "Courier New", monospace; font-size:13px; line-height:1.9; }
+  .cmd-line { padding:1px 0; }
+  .cmd-line .kr { margin-left:6px; }
+</style>
+</head>
+<body>
+
+<table>
+<caption>라우팅 (대소문자 구분)</caption>
+<tbody>
+
+<tr>
+  <td class="vert" rowspan="13">en(관리자모드)</td>
+  <td class="vert">show확인</td>
+  <td colspan="6">
+    <span class="spoiler" onclick="toggle(this)">interface, user(s), ip route, flash</span><br>
+    <span class="kr">인터페이스, 사용자, 라우팅 테이블, 플래쉬</span>
+  </td>
+ <td rowspan="13">copy r s저장</td>
+</tr>
+
+<tr>
+  <td class="vert" rowspan="12">conf t설정</td>
+  <td colspan="4">
+    <span class="spoiler" onclick="toggle(this)">ip domain-name [이름]</span><br>
+    <span class="kr">도메인 이름변경</span>
+  </td>
+  <td class="exi" rowspan="3" colspan="2">exi 나가기</td> 
+</tr>
+
+<tr>
+  <td colspan="4">
+    <span class="spoiler" onclick="toggle(this)">hostname [이름]</span><br>
+    <span class="kr">호스트 이름변경</span>
+  </td>
+</tr>
+
+<tr>
+  <td colspan="4">
+    <span class="spoiler" onclick="toggle(this)">ip default-gateway [ip]</span><br>
+    <span class="kr">게이트웨이 설정</span>
+  </td>
+</tr>
+
+<tr>
+  <td rowspan="3">L&gt;</td>
+  <td rowspan="2">
+    <span class="spoiler" onclick="toggle(this)">line console 0 </br> (li c 0)</span><br>
+
+    <span class="kr">콘솔 (console)</span>
+  </td>
+  <td>
+    <span class="spoiler" onclick="toggle(this)">exec-timeout 05 50</span><br>
+    <span class="kr">분 초</span>
+  </td>
+  <td rowspan="3">
+    <span class="spoiler" onclick="toggle(this)">(login)</span>
+  </td>
+  <td class="exi" rowspan="9">exi</td>
+  <td class="exi" rowspan="9">exi</td>
+</tr>
+
+<tr>
+  <td>
+    <span class="spoiler" onclick="toggle(this)">password ~~~~~</span><br>
+    <span class="kr">패스워드 변경</span>
+  </td>
+</tr>
+
+<tr>
+  <td>
+    <span class="spoiler" onclick="toggle(this)">line vty 0 4</span><br>
+    <span class="kr">텔넷 (telnet)</span>
+  </td>
+  <td>
+    <span class="spoiler" onclick="toggle(this)">password ~~~~~</span>
+  </td>
+</tr>
+
+<tr>
+  <td rowspan="6">
+    <span class="spoiler" onclick="toggle(this)">interface ~~~</span><br>
+    <span class="blue">(int ~~~~~)</span><br>
+    <span class="kr">~~~인터페이스의</span>
+  </td>
+  <td colspan="2" rowspan="2">
+    <span class="spoiler" onclick="toggle(this)">ip address ~~/~~</span><br>
+    <span class="kr">ip설정 ip주소/서브넷마스크</span>
+  </td>
+  <td>
+    <span class="spoiler" onclick="toggle(this)">(ip address ~~/~~ secondary)</span><br>
+    <span class="kr">세컨더리 설정</span>
+  </td>
+</tr>
+
+<tr>
+  <td>
+    <span class="spoiler" onclick="toggle(this)">(ip directed-broadcast)</span><br>
+    <span class="kr">전체 방송 하기 </span>
+  </td>
+</tr>
+
+<tr>
+  <td colspan="3">
+    <span class="spoiler" onclick="toggle(this)">bandwidth ~~~</span><br>
+    <span class="kr">대역폭</span>
+  </td>
+</tr>
+
+<tr>
+  <td colspan="3">
+    <span class="spoiler" onclick="toggle(this)">clock rate ~~~</span><br>
+    <span class="kr">clockrate</span>
+  </td>
+</tr>
+
+<tr>
+  <td colspan="3">
+    <span class="spoiler" onclick="toggle(this)">description ~~~</span><br>
+    <span class="kr">디스크립션</span>
+  </td>
+
+</tr>
+
+<tr>
+  <td colspan="3">
+    <span class="spoiler" onclick="toggle(this)">no shutdown</span><br>
+    <span class="kr">활성화</span>
+  </td>
+</tr>
+
+</tbody>
+</table>
+
+
+<div class="section-title">실전 문제 (설정 시나리오 20제)</div>
+<div class="prob">
+  <div class="prob-title">1. 라우팅 테이블 정보 확인 &amp; 저장</div>
+  <div class="cmd-block">
+    <div class="cmd-line"><span class="spoiler" onclick="toggle(this)">en</span></div>
+    <div class="cmd-line"><span class="spoiler" onclick="toggle(this)">conf t</span></div>
+    <div class="cmd-line"><span class="spoiler" onclick="toggle(this)">show ip route</span></div>
+    <div class="cmd-line"><span class="spoiler" onclick="toggle(this)">copy r s</span></div>
+    <div class="cmd-line"><span class="spoiler" onclick="toggle(this)">[enter]</span></div>
+  </div>
+</div>
+<div class="prob">
+  <div class="prob-title">2. rip 환경, 라우팅 테이블 등록되지 않은 패킷의 목적지를 `192.168.10.0`으로 보내는 디폴트 네트워크 설정</div>
+  <div class="cmd-block">
+    <div class="cmd-line"><span class="spoiler" onclick="toggle(this)">en</span></div>
+    <div class="cmd-line"><span class="spoiler" onclick="toggle(this)">conf t</span></div>
+    <div class="cmd-line"><span class="spoiler" onclick="toggle(this)">ip default-network 192.168.10.0</span></div>
+    <div class="cmd-line"><span class="spoiler" onclick="toggle(this)">exit</span></div>
+    <div class="cmd-line"><span class="spoiler" onclick="toggle(this)">copy r s</span></div>
+  </div>
+</div>
+<div class="prob">
+  <div class="prob-title">3. console 접속 시 비번 설정 `ICQA`</div>
+  <div class="cmd-block">
+    <div class="cmd-line"><span class="spoiler" onclick="toggle(this)">en</span></div>
+    <div class="cmd-line"><span class="spoiler" onclick="toggle(this)">conf t</span></div>
+    <div class="cmd-line"><span class="spoiler" onclick="toggle(this)">line console 0</span></div>
+    <div class="cmd-line"><span class="spoiler" onclick="toggle(this)">password ICQA</span></div>
+    <div class="cmd-line"><span class="spoiler" onclick="toggle(this)">login</span></div>
+    <div class="cmd-line"><span class="spoiler" onclick="toggle(this)">exit</span></div>
+    <div class="cmd-line"><span class="spoiler" onclick="toggle(this)">exit</span></div>
+    <div class="cmd-line"><span class="spoiler" onclick="toggle(this)">copy r s</span></div>
+  </div>
+</div>
+<div class="prob">
+  <div class="prob-title">4. 라우터에서 사용하는 인터페이스 정보 확인</div>
+  <div class="cmd-block">
+    <div class="cmd-line"><span class="spoiler" onclick="toggle(this)">en</span></div>
+    <div class="cmd-line"><span class="spoiler" onclick="toggle(this)">show int  (show interface)</span></div>
+    <div class="cmd-line"><span class="spoiler" onclick="toggle(this)">copy r s</span></div>
+  </div>
+</div>
+<div class="prob">
+  <div class="prob-title">5. 라우터 소프트 웨어 버전과 IOS 버전 등 확인</div>
+  <div class="cmd-block">
+    <div class="cmd-line"><span class="spoiler" onclick="toggle(this)">en</span></div>
+    <div class="cmd-line"><span class="spoiler" onclick="toggle(this)">show version</span></div>
+    <div class="cmd-line"><span class="spoiler" onclick="toggle(this)">copy r s</span></div>
+  </div>
+</div>
+<div class="prob">
+  <div class="prob-title">6. fastEthernet 0/0의 description 설정</div>
+  <div class="prob-context">
+    ICQA<br>
+  </div>
+  <div class="cmd-block">
+    <div class="cmd-line"><span class="spoiler" onclick="toggle(this)">en</span></div>
+    <div class="cmd-line"><span class="spoiler" onclick="toggle(this)">conf t</span></div>
+    <div class="cmd-line"><span class="spoiler" onclick="toggle(this)">int fa0/0</span></div>
+    <div class="cmd-line"><span class="spoiler" onclick="toggle(this)">description ICQA</span></div>
+    <div class="cmd-line"><span class="spoiler" onclick="toggle(this)">exit</span></div>
+    <div class="cmd-line"><span class="spoiler" onclick="toggle(this)">exit</span></div>
+    <div class="cmd-line"><span class="spoiler" onclick="toggle(this)">copy r s</span></div>
+  </div>
+</div>
+<div class="prob">
+  <div class="prob-title">7. router의 default-network 설정</div>
+  <div class="cmd-block">
+    <div class="cmd-line"><span class="spoiler" onclick="toggle(this)">en</span></div>
+    <div class="cmd-line"><span class="spoiler" onclick="toggle(this)">conf t</span></div>
+    <div class="cmd-line"><span class="spoiler" onclick="toggle(this)">ip default-network 192.168.0.2</span></div>
+    <div class="cmd-line"><span class="spoiler" onclick="toggle(this)">exit</span></div>
+    <div class="cmd-line"><span class="spoiler" onclick="toggle(this)">copy r s</span></div>
+  </div>
+</div>
+<div class="prob">
+  <div class="prob-title">8. fastEthernet0/0의 IP를 192.168.100.1/24 로 설정</div>
+  <div class="cmd-block">
+    <div class="cmd-line"><span class="spoiler" onclick="toggle(this)">en   &gt;   conf t</span></div>
+    <div class="cmd-line"><span class="spoiler" onclick="toggle(this)">int fa0/0</span></div>
+    <div class="cmd-line"><span class="spoiler" onclick="toggle(this)">ip addr</span></div>
+  </div>
+</div>
+<div class="prob">
+  <div class="prob-title">9. cpu process 리스트 확인</div>
+  <div class="prob-context">
+    cp, utiilization for five seconds, PID, QTy, PC, Runtime(MS), invoked 등<br>
+  </div>
+  <div class="cmd-block">
+    <div class="cmd-line"><span class="spoiler" onclick="toggle(this)">en</span></div>
+    <div class="cmd-line"><span class="spoiler" onclick="toggle(this)">show process   (show processes 또는 proc)</span></div>
+    <div class="cmd-line"><span class="spoiler" onclick="toggle(this)">copy r s</span></div>
+  </div>
+</div>
+<div class="prob">
+  <div class="prob-title">10. 라우터 dhcp 설정</div>
+  <div class="prob-context">
+    DHCP Pool: ICQA<br>
+    할당 가능 ip 주소 대역: 163.180.0.0/16 (GW163.180.0.0 과  브로드캐스트 163.180.255.255는 할당 주소에서 제외)<br>
+  </div>
+  <div class="cmd-block">
+    <div class="cmd-line"><span class="spoiler" onclick="toggle(this)">en</span></div>
+    <div class="cmd-line"><span class="spoiler" onclick="toggle(this)">conf t</span></div>
+    <div class="cmd-line"><span class="spoiler" onclick="toggle(this)">ip dhcp pool ICQA</span></div>
+    <div class="cmd-line"><span class="spoiler" onclick="toggle(this)">network 163.180.0.0 255.255.0.0</span></div>
+    <div class="cmd-line"><span class="spoiler" onclick="toggle(this)">exit</span></div>
+    <div class="cmd-line"><span class="spoiler" onclick="toggle(this)">exit</span></div>
+    <div class="cmd-line"><span class="spoiler" onclick="toggle(this)">copy r s</span></div>
+  </div>
+</div>
+<div class="prob">
+  <div class="prob-title">11. 라우터에 접속한 사용자 확인하고 저장</div>
+  <div class="cmd-block">
+    <div class="cmd-line"><span class="spoiler" onclick="toggle(this)">en</span></div>
+    <div class="cmd-line"><span class="spoiler" onclick="toggle(this)">show user   (show users  ,    sh u)</span></div>
+    <div class="cmd-line"><span class="spoiler" onclick="toggle(this)">copy r s</span></div>
+  </div>
+</div>
+<div class="prob">
+  <div class="prob-title">12. serail 2/0의 ip를 아래에 내용으로 설정하고 활성화</div>
+  <div class="prob-context">
+    ip: 192.168.0.101/24<br>
+    ip: 192.168.0.102/24 secondary<br>
+  </div>
+  <div class="cmd-block">
+    <div class="cmd-line"><span class="spoiler" onclick="toggle(this)">en</span></div>
+    <div class="cmd-line"><span class="spoiler" onclick="toggle(this)">conf t</span></div>
+    <div class="cmd-line"><span class="spoiler" onclick="toggle(this)">int Serial2/0</span></div>
+    <div class="cmd-line"><span class="spoiler" onclick="toggle(this)">ip address 192.168.0.101 255.255.255.0</span></div>
+    <div class="cmd-line"><span class="spoiler" onclick="toggle(this)">ip address 192.168.0.102 255.255.255.0 secondary</span></div>
+    <div class="cmd-line"><span class="spoiler" onclick="toggle(this)">no shut</span></div>
+    <div class="cmd-line"><span class="spoiler" onclick="toggle(this)">exit</span></div>
+    <div class="cmd-line"><span class="spoiler" onclick="toggle(this)">exit</span></div>
+    <div class="cmd-line"><span class="spoiler" onclick="toggle(this)">copy r s</span></div>
+  </div>
+</div>
+<div class="prob">
+  <div class="prob-title">13. 라우터의 serial 2/0에 프레밍릴레이 dlci17로 설정 및 저장</div>
+  <div class="prob-context">
+    라우터1 &lt;-&gt; 라우터2   (S1/0 : 192.168.1.0/24)<br>
+    라우터2 &lt;-&gt; 라우터3   (S2/0 : 192.168.2.0/24)<br>
+  </div>
+  <div class="cmd-block">
+    <div class="cmd-line"><span class="spoiler" onclick="toggle(this)">en</span></div>
+    <div class="cmd-line"><span class="spoiler" onclick="toggle(this)">conf t</span></div>
+    <div class="cmd-line"><span class="spoiler" onclick="toggle(this)">int Serail2/0</span></div>
+    <div class="cmd-line"><span class="spoiler" onclick="toggle(this)">encapsulation frame-relay</span><span class='kr'>  // Frame-relay를 사용하겠다는 의미</span></div>
+    <div class="cmd-line"><span class="spoiler" onclick="toggle(this)">frame-relay interface-dlci 17</span><span class='kr'>  //DLCI는 16부터 1007까지 사용 가능</span></div>
+    <div class="cmd-line"><span class="spoiler" onclick="toggle(this)">~~~ Data link connection Indentifier</span><span class='kr'> // 이 포트의 DLCI는 17이라는 의미</span></div>
+    <div class="cmd-line"><span class="spoiler" onclick="toggle(this)">no shut</span><span class='kr'> // 활성화</span></div>
+    <div class="cmd-line"><span class="spoiler" onclick="toggle(this)">exit</span></div>
+    <div class="cmd-line"><span class="spoiler" onclick="toggle(this)">exit</span></div>
+    <div class="cmd-line"><span class="spoiler" onclick="toggle(this)">copy r s</span></div>
+  </div>
+</div>
+<div class="prob">
+  <div class="prob-title">14. 라우터2(icqa)가 라우터1(한국정보통신자격협회) 라인을 통해 인터넷을 이용할 수 있도록 router2에 static routing 설정하라. 단, default network(0.0.0.0 0.0.0.0)로 설정 시 오답 처리됨</div>
+  <div class="cmd-block">
+    <div class="cmd-line"><span class="spoiler" onclick="toggle(this)">en</span></div>
+    <div class="cmd-line"><span class="spoiler" onclick="toggle(this)">conf t</span></div>
+    <div class="cmd-line"><span class="spoiler" onclick="toggle(this)">ip route 210.240.100.1 255.255.255.0 211.192.100.2</span></div>
+    <div class="cmd-line"><span class="spoiler" onclick="toggle(this)">exit</span></div>
+    <div class="cmd-line"><span class="spoiler" onclick="toggle(this)">copy r s</span></div>
+  </div>
+</div>
+<div class="prob">
+  <div class="prob-title">15. telnet 접속할 때 터미널 0 4 까지 ssh로 접속 가능하게 설정</div>
+  <div class="prob-context">
+    pc1 &lt;-&gt; router1<br>
+  </div>
+  <div class="cmd-block">
+    <div class="cmd-line"><span class="spoiler" onclick="toggle(this)">en</span></div>
+    <div class="cmd-line"><span class="spoiler" onclick="toggle(this)">conf t</span></div>
+    <div class="cmd-line"><span class="spoiler" onclick="toggle(this)">line vty 0 4</span></div>
+    <div class="cmd-line"><span class="spoiler" onclick="toggle(this)">tra input ssh</span></div>
+    <div class="cmd-line"><span class="spoiler" onclick="toggle(this)">tra output ssh</span></div>
+    <div class="cmd-line"><span class="spoiler" onclick="toggle(this)">login</span><span class='kr'>    // ㅂ;활성화라는 개념이 없다면 무조건 활성화(login)함</span></div>
+    <div class="cmd-line"><span class="spoiler" onclick="toggle(this)">exit</span></div>
+    <div class="cmd-line"><span class="spoiler" onclick="toggle(this)">exit</span></div>
+    <div class="cmd-line"><span class="spoiler" onclick="toggle(this)">copy r s</span></div>
+  </div>
+</div>
+<div class="prob">
+  <div class="prob-title">16. Serial2/0의 clock rate를 72k로 설정</div>
+  <div class="cmd-block">
+    <div class="cmd-line"><span class="spoiler" onclick="toggle(this)">en</span></div>
+    <div class="cmd-line"><span class="spoiler" onclick="toggle(this)">conf t</span></div>
+    <div class="cmd-line"><span class="spoiler" onclick="toggle(this)">clock rate 72000</span></div>
+    <div class="cmd-line"><span class="spoiler" onclick="toggle(this)">no shut</span></div>
+    <div class="cmd-line"><span class="spoiler" onclick="toggle(this)">exit</span></div>
+    <div class="cmd-line"><span class="spoiler" onclick="toggle(this)">exit</span></div>
+    <div class="cmd-line"><span class="spoiler" onclick="toggle(this)">copy r s</span></div>
+  </div>
+</div>
+<div class="prob">
+  <div class="prob-title">17. console 0에 3분30초 동안 입력신호 없으면 해당 세션 자동으로 종료하도록 설정</div>
+  <div class="cmd-block">
+    <div class="cmd-line"><span class="spoiler" onclick="toggle(this)">en</span></div>
+    <div class="cmd-line"><span class="spoiler" onclick="toggle(this)">conf t</span></div>
+    <div class="cmd-line"><span class="spoiler" onclick="toggle(this)">line console 0</span></div>
+    <div class="cmd-line"><span class="spoiler" onclick="toggle(this)">exec-timeout 03 30</span><span class='kr'>    // 3 30 가능</span></div>
+    <div class="cmd-line"><span class="spoiler" onclick="toggle(this)">exit</span></div>
+    <div class="cmd-line"><span class="spoiler" onclick="toggle(this)">exit</span></div>
+    <div class="cmd-line"><span class="spoiler" onclick="toggle(this)">copy r s</span></div>
+  </div>
+</div>
+<div class="prob">
+  <div class="prob-title">18. router1의 domain-name을 아래처럼 설정</div>
+  <div class="prob-context">
+    Router&gt; enable<br>
+    Router# show running-config<br>
+    ```<br>
+    ```<br>
+  </div>
+  <div class="cmd-block">
+    <div class="cmd-line"><span class="spoiler" onclick="toggle(this)">ip doamin-name ICQA</span></div>
+    <div class="cmd-line"><span class="spoiler" onclick="toggle(this)">en</span></div>
+    <div class="cmd-line"><span class="spoiler" onclick="toggle(this)">conf t</span></div>
+    <div class="cmd-line"><span class="spoiler" onclick="toggle(this)">ip domain-name ICQA</span><span class='kr'>  // ip domain ICQA</span></div>
+    <div class="cmd-line"><span class="spoiler" onclick="toggle(this)">exit</span></div>
+    <div class="cmd-line"><span class="spoiler" onclick="toggle(this)">copy r s</span></div>
+  </div>
+</div>
+<div class="prob">
+  <div class="prob-title">19. 홉수가 15 이하인 중/소규모 네트워ㄱ크 구성할거임. router1의 ripv2 라우팅 설정하시오. 단 pc의 gw ip 주소는 1번째 주소</div>
+  <div class="prob-context">
+    pc3(192.168.10.10) ---- router1(s0/3/0 ip: 10.10.10.10) --- RIPv2 ----- ROUTER2(s0/3/0 ip: 10.10.10.20) ----- pc4(192.168.11.20)<br>
+  </div>
+  <div class="cmd-block">
+    <div class="cmd-line"><span class="spoiler" onclick="toggle(this)">en</span></div>
+    <div class="cmd-line"><span class="spoiler" onclick="toggle(this)">conf t</span></div>
+    <div class="cmd-line"><span class="spoiler" onclick="toggle(this)">router ip</span></div>
+    <div class="cmd-line"><span class="spoiler" onclick="toggle(this)">version 2</span></div>
+    <div class="cmd-line"><span class="spoiler" onclick="toggle(this)">network 10.10.10.10</span></div>
+    <div class="cmd-line"><span class="spoiler" onclick="toggle(this)">network 192.168.10.1</span></div>
+    <div class="cmd-line"><span class="spoiler" onclick="toggle(this)">no auto-summary</span><span class='kr'> // 거리 벡터 방식만 적용되고 자동축약은 안 한다는 뜻</span></div>
+    <div class="cmd-line"><span class="spoiler" onclick="toggle(this)">exit</span></div>
+    <div class="cmd-line"><span class="spoiler" onclick="toggle(this)">copy r s</span></div>
+  </div>
+</div>
+<div class="prob">
+  <div class="prob-title">20. 대규모 네트워크에서, 연결속도 기준(링크상태방식) 계산 하여 동적으로 라우팅 구성하고자함. router2의 라우팅 설정하라. pc의 gw주소는 1번째 주소, process 번호와 area는 1로함</div>
+  <div class="prob-context">
+    pc3(192.18.10.10) - router1(10.10.10.10) ---- router2(ip: 10.10.10.20) - pc4(192.168.11.20)<br>
+  </div>
+  <div class="cmd-block">
+    <div class="cmd-line"><span class="spoiler" onclick="toggle(this)">en</span></div>
+    <div class="cmd-line"><span class="spoiler" onclick="toggle(this)">conf t</span></div>
+    <div class="cmd-line"><span class="spoiler" onclick="toggle(this)">router ospf 1</span></div>
+    <div class="cmd-line"><span class="spoiler" onclick="toggle(this)">network 10.10.10.20 0.0.0.0 area 1</span></div>
+    <div class="cmd-line"><span class="spoiler" onclick="toggle(this)">network 192.168.11.1 0.0.0.0 area 1</span></div>
+    <div class="cmd-line"><span class="spoiler" onclick="toggle(this)">exit</span></div>
+    <div class="cmd-line"><span class="spoiler" onclick="toggle(this)">exit</span></div>
+    <div class="cmd-line"><span class="spoiler" onclick="toggle(this)">copy r s</span></div>
+  </div>
+</div>
+
+<div class="hint">회색 박스를 클릭하면 명령어(정답)가 보입니다. 다시 클릭하면 가려집니다.</div>
+
+<script>
+function toggle(el){
+  el.classList.toggle('revealed');
+}
+</script>
+</body>
+</html>
