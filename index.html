@@ -318,12 +318,11 @@
 <div class="prob">
   <div class="prob-title">14. 라우터2(icqa)가 라우터1(한국정보통신자격협회) 라인을 통해 인터넷을 이용할 수 있도록 router2에 static routing 설정하라. 단, default network(0.0.0.0 0.0.0.0)로 설정 시 오답 처리됨</div>
   <div class="prob-context">
-    <span class="spoiler" onclick="toggle(this)">ip route [목적지 네트워크] [서브넷마스크] [next-hop 주소]
+    <span class="spoiler" onclick="toggle(this)">ip route [목적지 네트워크] [서브넷마스크] [next-hop 주소] </span>
       <ul>
-        <li>목적지: 본사(Router1) 쪽 네트워크 정보 (그림의 NI 210.240.100.1 계열)</li>
-        <li>next-hop: Router2에서 봤을 때 Router1로 나가는 직접 연결된 시리얼 인터페이스 주소(211.192.100.2, R1의 S0 주소)</li>
+        <li> <span class="spoiler" onclick="toggle(this)">목적지: 본사(Router1) 쪽 네트워크 정보 (그림의 NI 210.240.100.1 계열)</span></li>
+        <li> <span class="spoiler" onclick="toggle(this)">next-hop: Router2에서 봤을 때 Router1로 나가는 직접 연결된 시리얼 인터페이스 주소(211.192.100.2, R1의 S0 주소)</span></li>      
       </ul>
-    </span>
   </div>
   <div class="cmd-block">
     <div class="cmd-line"><span class="spoiler" onclick="toggle(this)">en</span></div>
