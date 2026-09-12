@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
 <title>라우팅 (대소문자 구분) - 명령어 퀴즈</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -111,20 +112,29 @@
     font-size:11px;
   }
 
+  /* 정답을 가리는 방식: 글자색을 배경과 맞추는 대신,
+     불투명한 박스를 위에 덮어서 물리적으로 가린다.
+     (다크모드 자동보정 등 브라우저 색상 보정에 영향받지 않음) */
   .spoiler{
+    position:relative;
     display:inline-block;
-    background:#33443a;
-    color:#33443a;
+    background:var(--amber);
+    color:var(--ink);
     border-radius:4px;
     padding:1px 6px;
     cursor:pointer;
     user-select:none;
-    transition:.15s;
     font-family:'JetBrains Mono',monospace;
   }
-  .spoiler.revealed{
-    background:var(--amber);
-    color:var(--ink);
+  .spoiler::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    border-radius:4px;
+    background:#33443a;
+  }
+  .spoiler.revealed::before{
+    display:none;
   }
 
   .hint{
@@ -173,11 +183,6 @@
     white-space:pre-line;
     border-radius:0 4px 4px 0;
   }
-  .prob-context .spoiler,
-  .prob-context ul .spoiler{
-    background:#33443a;
-    color:#33443a;
-  }
   .prob-context ul{ margin:6px 0 0; padding-left:18px; }
   .prob-context li{ margin:3px 0; }
 
@@ -207,13 +212,9 @@
     font-size:11px;
     margin-left:8px;
   }
-  .cmd-block .spoiler{
-    background:rgba(255,255,255,.12);
-  --  color:rgba(255,255,255,.12);
-  }
-  .cmd-block .spoiler.revealed{
-    background:var(--amber);
-    color:var(--ink);
+  /* 터미널(어두운) 배경에서는 가리는 박스 색만 살짝 다르게 */
+  .cmd-block .spoiler::before{
+    background:#3B4C40;
   }
 
   @media (max-width:640px){
@@ -552,7 +553,6 @@
   <div class="cmd-block">
     <div class="cmd-line"><span class="spoiler" onclick="toggle(this)">en</span></div>
     <div class="cmd-line"><span class="spoiler" onclick="toggle(this)">conf t</span></div>
-    <div class="cmd-line"><span class="spoiler" onclick="toggle(this)">int serial2/0</span></div>
     <div class="cmd-line"><span class="spoiler" onclick="toggle(this)">clock rate 72000</span></div>
     <div class="cmd-line"><span class="spoiler" onclick="toggle(this)">no shut</span></div>
     <div class="cmd-line"><span class="spoiler" onclick="toggle(this)">exit</span></div>
@@ -578,10 +578,10 @@
     Router&gt; enable<br>
     Router# show running-config<br>
     ```<br>
-        ip doamin-name ICQA
     ```<br>
   </div>
   <div class="cmd-block">
+    <div class="cmd-line"><span class="spoiler" onclick="toggle(this)">ip doamin-name ICQA</span></div>
     <div class="cmd-line"><span class="spoiler" onclick="toggle(this)">en</span></div>
     <div class="cmd-line"><span class="spoiler" onclick="toggle(this)">conf t</span></div>
     <div class="cmd-line"><span class="spoiler" onclick="toggle(this)">ip domain-name ICQA</span><span class='kr'>  // ip domain ICQA</span></div>
