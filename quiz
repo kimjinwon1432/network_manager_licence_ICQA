@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>네트워크관리사 2급 실기 퀴즈</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0E1620;
+  --surface:#16212E;
+  --surface2:#1D2B3A;
+  --line:#2A3B4D;
+  --text:#E7EDF3;
+  --muted:#8CA0B3;
+  --amber:#FF9F45;
+  --green:#4FC08D;
+  --red:#E5606B;
+  --mono:'IBM Plex Mono',monospace;
+  --sans:'IBM Plex Sans KR',sans-serif;
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:var(--sans);
+  -webkit-font-smoothing:antialiased;}
+body{min-height:100vh;}
+.wrap{max-width:520px;margin:0 auto;padding:20px 18px 60px;min-height:100vh;display:flex;flex-direction:column;}
+
+/* header / hop trail */
+.hop-trail{display:flex;align-items:center;gap:3px;margin-bottom:22px;}
+.hop{flex:1;height:3px;background:var(--line);border-radius:2px;position:relative;overflow:hidden;}
+.hop.done{background:var(--amber);}
+.hop.current{background:var(--line);}
+.hop.current::after{content:'';position:absolute;left:0;top:0;bottom:0;width:40%;background:var(--amber);animation:pulse 1.4s ease-in-out infinite;}
+@keyframes pulse{0%{left:-40%;}100%{left:100%;}}
+
+/* home screen */
+.home-hero{margin-bottom:28px;}
+.home-hero .eyebrow{font-family:var(--mono);font-size:12px;color:var(--amber);letter-spacing:.02em;margin-bottom:8px;}
+.home-hero h1{font-size:26px;line-height:1.3;margin:0 0 10px;font-weight:700;}
+.home-hero p{color:var(--muted);font-size:14.5px;line-height:1.6;margin:0;}
+
+.cat-list{display:flex;flex-direction:column;gap:10px;}
+.cat-card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px 16px;
+  display:flex;align-items:center;justify-content:space-between;cursor:pointer;transition:border-color .15s,background .15s;}
+.cat-card:active{background:var(--surface2);}
+.cat-card:hover{border-color:var(--amber);}
+.cat-info .num{font-family:var(--mono);font-size:11px;color:var(--amber);margin-bottom:4px;}
+.cat-info .title{font-size:16px;font-weight:600;margin-bottom:3px;}
+.cat-info .meta{font-size:12.5px;color:var(--muted);font-family:var(--mono);}
+.cat-arrow{font-family:var(--mono);color:var(--muted);font-size:18px;}
+.cat-progress{font-family:var(--mono);font-size:11px;color:var(--green);}
+
+.reset-row{margin-top:24px;text-align:center;}
+.reset-btn{background:none;border:none;color:var(--muted);font-family:var(--mono);font-size:12px;
+  text-decoration:underline;cursor:pointer;padding:8px;}
+
+/* quiz screen */
+.quiz-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;}
+.back-btn{background:none;border:none;color:var(--muted);font-family:var(--mono);font-size:13px;cursor:pointer;padding:6px 0;}
+.qcount{font-family:var(--mono);font-size:13px;color:var(--muted);}
+
+.qcard{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:22px 18px;margin-top:14px;}
+.qprompt{font-size:17px;line-height:1.55;font-weight:500;margin-bottom:20px;}
+
+.option{display:block;width:100%;text-align:left;background:var(--surface2);border:1px solid var(--line);
+  border-radius:8px;padding:13px 14px;margin-bottom:9px;color:var(--text);font-size:15px;font-family:var(--sans);
+  cursor:pointer;transition:border-color .12s,background .12s;line-height:1.4;}
+.option:active{background:#243546;}
+.option.selected{border-color:var(--amber);}
+.option.correct{border-color:var(--green);background:rgba(79,192,141,.12);}
+.option.wrong{border-color:var(--red);background:rgba(229,96,107,.12);}
+.option:disabled{cursor:default;}
+.opt-letter{font-family:var(--mono);color:var(--amber);margin-right:9px;font-size:13px;}
+
+.hint-row{margin-top:6px;}
+.hint-btn{background:none;border:none;color:var(--muted);font-family:var(--mono);font-size:12px;cursor:pointer;padding:6px 0;text-decoration:underline;}
+.hint-text{font-size:13px;color:var(--muted);margin-top:6px;line-height:1.5;padding:10px 12px;background:var(--surface2);border-radius:8px;border-left:2px solid var(--amber);}
+
+.explain-box{margin-top:16px;padding:14px 14px;border-radius:8px;background:var(--surface2);border-left:3px solid var(--green);font-size:13.5px;line-height:1.6;color:var(--text);}
+.explain-box.wrong-box{border-left-color:var(--red);}
+.explain-label{font-family:var(--mono);font-size:11px;margin-bottom:5px;letter-spacing:.02em;}
+.explain-label.ok{color:var(--green);}
+.explain-label.no{color:var(--red);}
+
+.next-btn{margin-top:16px;width:100%;background:var(--amber);color:#12181f;border:none;border-radius:8px;
+  padding:14px;font-size:15px;font-weight:600;cursor:pointer;font-family:var(--sans);}
+.next-btn:active{opacity:.85;}
+
+/* result screen */
+.result-wrap{text-align:center;padding:40px 0 10px;}
+.result-score{font-family:var(--mono);font-size:54px;color:var(--amber);font-weight:600;margin-bottom:6px;}
+.result-label{color:var(--muted);font-size:14px;margin-bottom:28px;}
+.result-bar{height:8px;background:var(--line);border-radius:4px;overflow:hidden;margin-bottom:28px;}
+.result-bar-fill{height:100%;background:linear-gradient(90deg,var(--amber),var(--green));}
+.result-actions{display:flex;flex-direction:column;gap:10px;}
+.btn-primary{background:var(--amber);color:#12181f;border:none;border-radius:8px;padding:14px;font-size:15px;font-weight:600;cursor:pointer;font-family:var(--sans);}
+.btn-secondary{background:none;color:var(--muted);border:1px solid var(--line);border-radius:8px;padding:14px;font-size:14px;cursor:pointer;font-family:var(--sans);}
+
+.wrong-list{text-align:left;margin-top:28px;border-top:1px solid var(--line);padding-top:20px;}
+.wrong-list h3{font-size:13px;color:var(--muted);font-family:var(--mono);margin-bottom:12px;font-weight:500;}
+.wrong-item{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:12px 14px;margin-bottom:8px;font-size:13.5px;line-height:1.5;}
+.wrong-item .wq{color:var(--text);margin-bottom:4px;}
+.wrong-item .wa{color:var(--green);font-family:var(--mono);font-size:12.5px;}
+
+footer{text-align:center;color:var(--line);font-family:var(--mono);font-size:11px;margin-top:auto;padding-top:40px;}
+</style>
+</head>
+<body>
+<div class="wrap" id="app"></div>
+
+<script>
+const DATA = {"categories": [{"title": "출제빈도 핵심 기출", "questions": [{"prompt": "TCP/IP 4계층 중 '전송 계층'에 속하는 프로토콜은?", "options": ["ARP", "ICMP", "TCP", "IGMP"], "correct": 2, "explanation": "인터넷 계층: ARP, RARP, IGMP, ICMP / 전송 계층: TCP, UDP / 응용 계층: SMTP, SNMP, HTTP, DNS 등."}, {"prompt": "IP 172.168.102.5, 서브넷마스크 255.255.224.0일 때 네트워크 ID는?", "options": ["172.168.64.0", "172.168.96.0", "172.168.102.0", "172.168.128.0"], "correct": 1, "explanation": "256-224=32씩 8구간. 172.168.96.0~172.168.127.255 구간에 102가 포함되므로 네트워크ID는 172.168.96.0."}, {"prompt": "162.128.0.0 ~ 162.128.255.255 범위의 B클래스 네트워크의 네트워크 ID는?", "options": ["162.0.0.0", "162.128.0.0", "162.128.255.0", "162.128.0.1"], "correct": 1, "explanation": "B클래스는 앞 16비트가 네트워크 주소이므로 네트워크 ID는 162.128.0.0."}, {"prompt": "인터넷망(공중망)을 사설망처럼 이용해 회선 비용을 절감하는 기업통신 서비스는?", "options": ["VPN", "MPLS", "VLAN", "NAT"], "correct": 0, "explanation": "VPN(가상사설망)은 공중망을 암호화된 터널로 사설망처럼 이용하는 기술입니다."}, {"prompt": "IPv6의 주소체계 비트 수는?", "options": ["32비트", "64비트", "128비트", "256비트"], "correct": 2, "explanation": "IPv4는 32비트, IPv6는 128비트(16진수 표기)입니다."}, {"prompt": "이미 알려진 공격 패턴만 탐지 가능하고, 새로운 침입 유형은 탐지하지 못하는 침입탐지 기법은?", "options": ["오용탐지기법", "비정상탐지기법", "휴리스틱 탐지", "상태기반 검사"], "correct": 0, "explanation": "오용탐지기법은 알려진 패턴만 탐지, 비정상탐지기법은 정상행위 이탈을 탐지해 새 유형도 탐지 가능."}, {"prompt": "공격 서명을 찾아 자동으로 조치를 취해 비정상 트래픽을 실시간 차단하는 보안 솔루션은?", "options": ["IDS", "IPS", "방화벽", "VPN"], "correct": 1, "explanation": "IDS는 탐지만, IPS는 탐지+자동 차단까지 수행합니다."}, {"prompt": "스위치의 한 포트 트래픽을 다른 모니터링 포트로 복제해 보내는 기능은?", "options": ["포트 미러링", "VLAN 트렁킹", "스패닝 트리", "링크 애그리게이션"], "correct": 0, "explanation": "포트 미러링은 트래픽 분석을 위해 특정 포트 트래픽을 다른 포트로 복제합니다."}, {"prompt": "OSI 네트워크 계층(3계층)에서 동작하는 장비는?", "options": ["허브", "스위치", "라우터", "리피터"], "correct": 2, "explanation": "물리계층: 허브·리피터 / 데이터링크: 스위치·브리지 / 네트워크: 라우터."}, {"prompt": "IP 주소를 MAC 주소로 대응시키는 프로토콜은?", "options": ["ARP", "RARP", "ICMP", "DNS"], "correct": 0, "explanation": "ARP는 IP→MAC, RARP는 그 반대입니다."}, {"prompt": "사설 IP를 인터넷 접속 시에만 공인 IP로 변환하는 기술은?", "options": ["DHCP", "NAT", "VPN", "VLAN"], "correct": 1, "explanation": "NAT은 사설 IP를 공인 IP로 변환하는 기술입니다."}, {"prompt": "서로 다른 통신망을 상호 접속시켜주는 장치는?", "options": ["라우터", "브리지", "게이트웨이", "리피터"], "correct": 2, "explanation": "게이트웨이는 서로 다른 프로토콜/통신망을 연결하는 관문 역할입니다."}, {"prompt": "다음 중 B클래스 사설 IP 대역은?", "options": ["10.0.0.0 ~ 10.255.255.255", "172.16.0.0 ~ 172.31.255.255", "192.168.0.0 ~ 192.168.255.255", "169.254.0.0 ~ 169.254.255.255"], "correct": 1, "explanation": "B클래스 사설대역은 172.16.0.0/12입니다."}, {"prompt": "MAC 계층에서 두 세그먼트 사이 패킷 전송을 담당하는 장치는?", "options": ["브리지", "라우터", "게이트웨이", "허브"], "correct": 0, "explanation": "브리지는 데이터링크 계층(MAC 기준)에서 동작합니다."}, {"prompt": "다음 중 RFID 시스템 구성요소가 아닌 것은?", "options": ["리더기(Reader)", "태그(Tag)", "안테나", "Access Point"], "correct": 3, "explanation": "RFID는 태그+리더기+안테나로 구성되며 Access Point는 Wi-Fi 장비입니다."}, {"prompt": "매니저-에이전트 간 관리 정보를 '메시지' 단위로 주고받는 프로토콜은?", "options": ["SNMP", "ICMP", "SMTP", "Telnet"], "correct": 0, "explanation": "SNMP는 네트워크 장비 관리를 위한 매니저-에이전트 프로토콜입니다."}, {"prompt": "오류 보고 및 상태 진단(ping, traceroute)에 사용되는 프로토콜은?", "options": ["ICMP", "IGMP", "ARP", "TCP"], "correct": 0, "explanation": "ICMP는 오류 보고와 상태 진단용 프로토콜입니다."}, {"prompt": "하나의 디스크 손상 시 다른 디스크의 복사본으로 복구 가능한 동적 볼륨은?", "options": ["스트라이프 볼륨", "미러링 볼륨", "스팬 볼륨", "단순 볼륨"], "correct": 1, "explanation": "미러링 볼륨은 RAID 1과 같은 원리로 데이터를 이중 기록합니다."}, {"prompt": "가짜 웹사이트로 이용자를 유인해 정보를 탈취하는 해킹 수법은?", "options": ["스니핑", "스푸핑", "스캐닝", "디도스"], "correct": 1, "explanation": "스푸핑은 IP·웹사이트 등을 위장해 사용자를 속이는 공격 기법입니다."}, {"prompt": "원격 로그인·명령 실행·파일 복사를 암호화된 채널로 지원하는 프로토콜은?", "options": ["Telnet", "SSH", "FTP", "RDP"], "correct": 1, "explanation": "SSH는 Telnet과 같은 기능을 암호화하여 안전하게 지원합니다."}, {"prompt": "첫 비트가 항상 0이며 네트워크 127개, 호스트 2^24개를 지원하는 IP 클래스는?", "options": ["A class", "B class", "C class", "D class"], "correct": 0, "explanation": "A클래스는 첫 비트 0, 네트워크부 8비트/호스트부 24비트 구조입니다."}]}, {"title": "리눅스 명령어 & 프로토콜", "questions": [{"prompt": "리눅스 시스템의 CPU 사용량, 우선순위 등을 실시간 모니터링하는 유틸리티는?", "options": ["top", "ps", "netstat", "man"], "correct": 0, "explanation": "top은 CPU/메모리와 프로세스 상태를 실시간으로 보여줍니다."}, {"prompt": "라우팅 테이블, 네트워크 인터페이스, 연결 상태를 보여주는 리눅스 명령어는?", "options": ["netstat", "traceroute", "ifconfig", "ping"], "correct": 0, "explanation": "netstat은 라우팅 테이블과 연결 통계 정보를 보여줍니다."}, {"prompt": "목적지 서버까지의 네트워크 경로(각 경유지)를 확인해주는 리눅스 명령어는?", "options": ["traceroute", "netstat", "ping", "nslookup"], "correct": 0, "explanation": "traceroute는 목적지까지 거쳐가는 경로를 추적합니다."}, {"prompt": "Windows의 tracert와 리눅스의 traceroute는 각각 어떤 프로토콜 기반인가?", "options": ["tracert-ICMP, traceroute-UDP", "tracert-UDP, traceroute-ICMP", "둘 다 TCP", "둘 다 ICMP"], "correct": 0, "explanation": "tracert는 ICMP, traceroute는 UDP 기반으로 동작합니다."}, {"prompt": "리눅스에서 비밀번호를 설정/변경하는 명령어는?", "options": ["passwd", "chmod", "useradd", "login"], "correct": 0, "explanation": "passwd 명령어로 비밀번호를 설정·변경합니다."}, {"prompt": "현재 작업 중인 디렉터리 경로를 출력하는 명령어는?", "options": ["pwd", "ls", "cd", "cat"], "correct": 0, "explanation": "pwd(Print Working Directory)는 현재 경로를 출력합니다."}, {"prompt": "명령어의 매뉴얼(도움말)을 출력하는 명령어는?", "options": ["man", "help", "info", "doc"], "correct": 0, "explanation": "man은 명령어 사용법을 담은 매뉴얼을 출력합니다."}, {"prompt": "소유자는 모든 권한, 그룹·기타는 읽기+실행만 갖도록 설정하는 명령은?", "options": ["chmod 755", "chmod 777", "chmod 644", "chmod 700"], "correct": 0, "explanation": "755=소유자(rwx) 그룹(r-x) 기타(r-x)."}, {"prompt": "리눅스 시스템을 종료하기 위한 init의 런레벨은?", "options": ["0", "1", "5", "6"], "correct": 0, "explanation": "init 0은 종료, init 6은 재부팅입니다."}, {"prompt": "GNU 하에 개발된 리눅스 부트로더는?", "options": ["grub", "init", "systemd", "fstab"], "correct": 0, "explanation": "GRUB은 부팅 초기 커널을 로드하는 부트로더입니다."}, {"prompt": "커널이 직접 실행하는 유일한 프로세스이자 부팅 후 첫 실행되는 프로세스는?", "options": ["init", "grub", "bash", "cron"], "correct": 0, "explanation": "init은 모든 프로세스의 부모 프로세스입니다."}, {"prompt": "부팅 시 자동으로 마운트되도록 설정하는 파일은?", "options": ["/etc/fstab", "/etc/passwd", "/etc/hosts", "/etc/init.d"], "correct": 0, "explanation": "/etc/fstab에 파일시스템과 마운트 지점을 등록합니다."}, {"prompt": "Distance Vector, 최대 홉수 15개, 30초 업데이트 주기인 라우팅 프로토콜은?", "options": ["RIP", "OSPF", "BGP", "EIGRP"], "correct": 0, "explanation": "RIP은 대표적 Distance Vector 프로토콜입니다."}, {"prompt": "Link State 방식으로 최단경로를 계산하는 라우팅 프로토콜은?", "options": ["OSPF", "RIP", "IGMP", "ARP"], "correct": 0, "explanation": "OSPF는 대표적 Link State 프로토콜입니다."}, {"prompt": "TCP/IP 전송 계층에 속하는 프로토콜 두 가지는?", "options": ["TCP, UDP", "TCP, IP", "IP, ICMP", "ARP, RARP"], "correct": 0, "explanation": "전송 계층은 TCP와 UDP입니다."}, {"prompt": "HTTP 트래픽을 필터링·모니터링·차단하는 애플리케이션 방화벽은?", "options": ["웹 방화벽(WAF)", "네트워크 방화벽", "IDS", "프록시 서버"], "correct": 0, "explanation": "WAF는 HTTP/HTTPS 트래픽을 애플리케이션 레벨에서 필터링합니다."}, {"prompt": "스위칭 기반으로 지리적 제한 없이 논리적 네트워크를 구성하는 기술은?", "options": ["VLAN", "VPN", "NAT", "WAN"], "correct": 0, "explanation": "VLAN은 물리적 위치와 무관하게 논리적으로 네트워크를 나눕니다."}, {"prompt": "VTP(스위치 간 VLAN 정보 동기화 프로토콜)에서 V는 무엇의 약자인가?", "options": ["VLAN", "Virtual", "VPN", "Verify"], "correct": 0, "explanation": "VTP = VLAN Trunking Protocol."}, {"prompt": "OSI 7계층 중 코드화, 암호화·복호화, 압축, 인증을 수행하는 계층은?", "options": ["표현 계층(6계층)", "세션 계층(5계층)", "응용 계층(7계층)", "전송 계층(4계층)"], "correct": 0, "explanation": "표현 계층은 데이터 형식 변환, 암호화, 압축, 인증을 담당합니다."}, {"prompt": "멀티캐스트 그룹 가입을 인근 라우터에 알리는 프로토콜은?", "options": ["IGMP", "ICMP", "ARP", "SNMP"], "correct": 0, "explanation": "IGMP는 Internet Group Management Protocol입니다."}]}, {"title": "서브네팅 & 보안/VPN", "questions": [{"prompt": "IP: 170.10.50.2, 서브넷마스크: 255.255.224.0의 네트워크 ID는?", "options": ["170.10.0.0", "170.10.32.0", "170.10.64.0", "170.10.50.0"], "correct": 1, "explanation": "170은 B클래스. 32씩 8구간. 50은 32~63 구간이므로 170.10.32.0."}, {"prompt": "172.168.200.100/18의 네트워크 ID는?", "options": ["172.168.128.0", "172.168.192.0", "172.168.0.0", "172.168.64.0"], "correct": 1, "explanation": "/18은 3번째 옥텟 64단위 구간. 200은 192~255 구간이므로 172.168.192.0."}, {"prompt": "172.50.48.6 / 255.255.224.0의 네트워크 ID는?", "options": ["172.50.0.0", "172.50.32.0", "172.50.48.0", "172.50.64.0"], "correct": 1, "explanation": "32씩 8구간. 48은 32~63 구간이므로 172.50.32.0."}, {"prompt": "192.168.100.150/25의 네트워크 ID는?", "options": ["192.168.100.0", "192.168.100.128", "192.168.100.64", "192.168.100.150"], "correct": 1, "explanation": "/25는 128단위 2구간. 150은 128~255 구간이므로 192.168.100.128."}, {"prompt": "192.xxx.xx.xxx/26 대역의 서브넷 개수는?", "options": ["2개", "4개", "8개", "16개"], "correct": 1, "explanation": "호스트부 2비트를 서브넷에 당겨 2^2=4개."}, {"prompt": "다음 중 C클래스 사설 IP 주소는?", "options": ["33.114.17.24", "128.46.83.25", "192.168.13.87", "222.248.255.34"], "correct": 2, "explanation": "사설C는 192.168.0.0~192.168.255.255."}, {"prompt": "다음 중 B클래스 사설 IP 주소는?", "options": ["192.168.100.0", "224.24.194.18", "10.14.36.100", "172.30.200.36"], "correct": 3, "explanation": "사설B는 172.16.0.0~172.31.255.255."}, {"prompt": "다음 중 A클래스 사설 IP 주소는?", "options": ["192.100.2.134", "10.172.192.24", "172.18.244.100", "224.45.67.129"], "correct": 1, "explanation": "사설A는 10.0.0.0~10.255.255.255."}, {"prompt": "가상 전용회선을 만들어 도청을 방지하며 AH와 ESP로 구성되는 통신규약은?", "options": ["IPSec", "SSL", "VLAN", "PPTP"], "correct": 0, "explanation": "IPSec은 AH+ESP로 구성된 VPN 통신규약입니다."}, {"prompt": "IP 패킷 인증·무결성은 보장하지만 암호화는 제공하지 않는 IPSec 헤더는?", "options": ["AH", "ESP", "SA", "IKE"], "correct": 0, "explanation": "AH는 인증만, ESP는 인증+암호화입니다."}, {"prompt": "IP 패킷 인증과 암호화를 모두 수행하는 IPSec 헤더는?", "options": ["ESP", "AH", "SA", "GRE"], "correct": 0, "explanation": "ESP는 무결성+기밀성을 동시에 보장합니다."}, {"prompt": "IPSec 구현 시 암호화·인증에 사용할 요소(키 등)를 정의하는 것은?", "options": ["SA(Security Association)", "AH", "ESP", "IKE"], "correct": 0, "explanation": "SA는 IPSec 통신에 필요한 보안 요소를 정의한 개념입니다."}, {"prompt": "브라우저 간 전송 데이터를 암호화해 인터넷 연결을 보호하는 기술은?", "options": ["SSL", "FTP", "Telnet", "SNMP"], "correct": 0, "explanation": "SSL(TLS)은 브라우저-서버 간 데이터를 암호화합니다."}, {"prompt": "SSL/TLS 인증서로 보호되는 HTTP 통신 프로토콜은?", "options": ["HTTPS", "HTTP2", "FTPS", "SFTP"], "correct": 0, "explanation": "HTTPS는 SSL/TLS로 암호화된 HTTP입니다."}, {"prompt": "외부 ping 허용: echo (A) > icmp_echo_ignore_all 에서 A는?", "options": ["0", "1", "-1", "2"], "correct": 0, "explanation": "ignore_all=0이면 ping 허용, 1이면 차단."}, {"prompt": "ICMP Type 3의 메시지는?", "options": ["Echo Reply", "Destination Unreachable", "Time Exceeded", "Redirect"], "correct": 1, "explanation": "0=에코응답,3=목적지도달불가,8=에코요구,11=시간초과."}, {"prompt": "장치에 IP를 자동으로 할당하는 프로토콜은?", "options": ["DHCP", "NAT", "DNS", "ARP"], "correct": 0, "explanation": "DHCP는 IP를 동적으로 자동 할당합니다."}, {"prompt": "미러링 모드 구성이라고도 하며 디스크 손상 시 복구 가능한 RAID 구성은?", "options": ["RAID 1", "RAID 0", "RAID 5", "RAID 10"], "correct": 0, "explanation": "RAID 1은 미러링으로 데이터를 이중 기록합니다."}, {"prompt": "TCP의 특징으로 올바른 조합은?", "options": ["연결성, 신뢰성, 송수신 동일", "비연결성, 신뢰성", "연결성, 송수신 다름", "비연결성, 빠른 전송"], "correct": 0, "explanation": "TCP는 연결지향, 신뢰성, 순서번호로 인한 송수신 순서 일치가 특징."}, {"prompt": "IPv4와 IPv6의 구분으로 올바른 것은?", "options": ["IPv4: 32비트/10진수, IPv6: 128비트/16진수", "IPv4: 64비트, IPv6: 32비트", "둘 다 32비트", "IPv4: 128비트, IPv6: 32비트"], "correct": 0, "explanation": "IPv4는 32비트 10진수, IPv6은 128비트 16진수 표기입니다."}]}, {"title": "라우터 실기 명령어 (Cisco IOS)", "questions": [{"prompt": "인터페이스에 보조(secondary) IP를 추가 설정하는 명령어 형식은?", "options": ["ip address [IP] [마스크] secondary", "ip address secondary [IP] [마스크]", "ip secondary-address [IP]", "ip add [IP] [마스크] backup"], "correct": 0, "explanation": "secondary는 명령 맨 뒤에 붙어 보조 IP임을 표시합니다."}, {"prompt": "기본적으로 shutdown 상태인 인터페이스를 활성화하는 명령어는?", "options": ["no shutdown", "enable interface", "activate", "start"], "correct": 0, "explanation": "no shutdown을 입력해야 인터페이스가 동작합니다."}, {"prompt": "Serial 인터페이스의 대역폭(bandwidth)을 2048로 설정하는 명령어는?", "options": ["bandwidth 2048", "speed 2048", "clock rate 2048", "bandwidth-limit 2048"], "correct": 0, "explanation": "bandwidth [값]은 대역폭 값을 설정합니다."}, {"prompt": "DCE 시리얼 인터페이스에서 클럭 속도를 72000으로 지정하는 명령어는?", "options": ["clock rate 72000", "bandwidth 72000", "speed 72000", "line rate 72000"], "correct": 0, "explanation": "clock rate는 DCE 장비의 클럭 속도를 지정합니다."}, {"prompt": "인터페이스의 Description을 'ICQA'로 지정하는 명령은?", "options": ["description ICQA", "name ICQA", "comment ICQA", "label ICQA"], "correct": 0, "explanation": "description 뒤에 텍스트를 그대로 입력합니다."}, {"prompt": "시리얼 인터페이스를 Frame Relay 방식으로 캡슐화하는 명령은?", "options": ["encapsulation frame-relay", "frame-relay encapsulation", "encapsulation ppp frame-relay", "frame-relay mode"], "correct": 0, "explanation": "encapsulation frame-relay가 정확한 순서입니다."}, {"prompt": "이미 만들어진 access-list 1을 인터페이스에 적용하는 명령은?", "options": ["ip access-group 1 in", "access-list apply 1", "ip access-list 1 in", "apply access-list 1"], "correct": 0, "explanation": "ip access-group [번호] in/out으로 적용합니다."}, {"prompt": "DHCP 주소풀을 생성하는 명령은?", "options": ["ip dhcp pool [이름]", "dhcp create pool [이름]", "ip dhcp-server [이름]", "dhcp pool add [이름]"], "correct": 0, "explanation": "ip dhcp pool로 (dhcp-config) 모드에 진입합니다."}, {"prompt": "DHCP pool(dhcp-config 모드) 안에서 배포할 네트워크 대역을 지정하는 명령은?", "options": ["network [주소] [마스크]", "range [주소] [마스크]", "ip range [주소]", "pool-network [주소]"], "correct": 0, "explanation": "dhcp-config 모드에서 network [주소] [마스크]를 사용합니다."}, {"prompt": "정적 경로(static route)를 설정하는 명령 형식은?", "options": ["ip route [목적지네트워크] [마스크] [게이트웨이]", "route add [목적지] [인터페이스]", "ip static-route [게이트웨이] [목적지]", "route static [목적지] [마스크]"], "correct": 0, "explanation": "ip route [목적지] [마스크] [다음홉]이 정확한 형식입니다."}, {"prompt": "IP 라우팅이 꺼진 환경에서 기본 게이트웨이를 지정하는 명령은?", "options": ["ip default-gateway [IP]", "ip default-network [IP]", "ip route 0.0.0.0 0.0.0.0 [IP]", "ip gateway [IP]"], "correct": 0, "explanation": "ip default-gateway는 라우팅이 꺼진 환경에서 사용합니다."}, {"prompt": "라우터에 후보 기본 경로(디폴트 네트워크)를 지정하는 명령은?", "options": ["ip default-network [주소]", "ip default-gateway [주소]", "ip route default [주소]", "ip network default [주소]"], "correct": 0, "explanation": "ip default-network는 default-gateway와 다른 명령입니다."}, {"prompt": "VTY 라인에서 SSH로만 접속을 허용(텔넷 차단)하는 명령은?", "options": ["transport input ssh", "transport output ssh", "access ssh only", "line ssh input"], "correct": 0, "explanation": "transport input ssh는 들어오는 접속을 SSH로 제한합니다."}, {"prompt": "VTY에 password를 설정했을 때, 인증이 실제로 작동하려면 반드시 함께 입력해야 하는 명령은?", "options": ["login", "authenticate", "enable secret", "verify"], "correct": 0, "explanation": "password만 있고 login이 없으면 인증이 활성화되지 않습니다."}, {"prompt": "VTY 접속에서 5분 50초 동안 입력이 없으면 세션이 자동 종료되게 하는 명령은?", "options": ["exec-timeout 5 50", "session-timeout 5:50", "idle-timeout 05 50", "timeout 5 50"], "correct": 0, "explanation": "exec-timeout [분] [초] 형식입니다."}, {"prompt": "콘솔 접속에 비밀번호를 설정하려면 먼저 어떤 라인 모드로 들어가야 하는가?", "options": ["line console 0", "line vty 0 4", "line aux 0", "line console 0 4"], "correct": 0, "explanation": "콘솔은 물리적으로 1개뿐이라 범위 지정이 불가능합니다."}, {"prompt": "SNMP 커뮤니티 문자열을 'ICQA'로 지정하는 정식 Cisco IOS 명령은?", "options": ["snmp-server community ICQA", "snmp community ICQA", "community snmp ICQA", "ip snmp community ICQA"], "correct": 0, "explanation": "정식 명령은 snmp-server community [문자열]입니다."}, {"prompt": "라우터의 소프트웨어/IOS 버전 정보를 확인하는 명령은?", "options": ["show version", "show ios", "show info", "show system"], "correct": 0, "explanation": "show version은 가장 기본적인 확인 명령입니다."}, {"prompt": "라우팅 테이블 정보를 확인하는 명령은?", "options": ["show ip route", "show route table", "show routing", "show ip table"], "correct": 0, "explanation": "show ip route로 현재 라우팅 테이블을 확인합니다."}, {"prompt": "라우터의 호스트 이름(hostname)을 변경하는 명령은?", "options": ["hostname [이름]", "set hostname [이름]", "name router [이름]", "router-name [이름]"], "correct": 0, "explanation": "hostname 입력 즉시 프롬프트가 바뀝니다."}]}]};
+const STORAGE_KEY = 'nqm2-quiz-progress-v1';
+
+function loadProgress(){
+  try{ return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; }catch(e){ return {}; }
+}
+function saveProgress(p){
+  try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(p)); }catch(e){}
+}
+let progress = loadProgress();
+
+let state = { screen:'home', catIndex:0, qIndex:0, answers:[], selected:null, showHint:false };
+
+const app = document.getElementById('app');
+
+function render(){
+  if(state.screen === 'home') renderHome();
+  else if(state.screen === 'quiz') renderQuiz();
+  else if(state.screen === 'result') renderResult();
+}
+
+function renderHome(){
+  let cards = DATA.categories.map((cat, i) => {
+    let best = (progress[i] && progress[i].best) || null;
+    let progHtml = best !== null ? `<div class="cat-progress">최고 ${best}/${cat.questions.length}</div>` : '';
+    return `<div class="cat-card" onclick="startCategory(${i})">
+      <div class="cat-info">
+        <div class="num">SET ${String(i+1).padStart(2,'0')}</div>
+        <div class="title">${cat.title}</div>
+        <div class="meta">${cat.questions.length}문항</div>
+      </div>
+      <div style="text-align:right">${progHtml}<div class="cat-arrow">→</div></div>
+    </div>`;
+  }).join('');
+
+  app.innerHTML = `
+    <div class="home-hero">
+      <div class="eyebrow">ICQA · NETWORK ADMIN LV.2</div>
+      <h1>네트워크관리사 2급<br>실기 대비 퀴즈</h1>
+      <p>기출 단답형 + 라우터 실기 명령어, 총 ${DATA.categories.reduce((a,c)=>a+c.questions.length,0)}문항. 세트를 골라 시작하세요.</p>
+    </div>
+    <div class="cat-list">${cards}</div>
+    <div class="reset-row"><button class="reset-btn" onclick="resetAllProgress()">전체 기록 초기화</button></div>
+    <footer>네트워크관리사 2급 실기 대비 · 모바일 웹퀴즈</footer>
+  `;
+}
+
+function startCategory(i){
+  state.screen = 'quiz';
+  state.catIndex = i;
+  state.qIndex = 0;
+  state.answers = [];
+  state.selected = null;
+  state.showHint = false;
+  render();
+}
+
+function renderQuiz(){
+  const cat = DATA.categories[state.catIndex];
+  const q = cat.questions[state.qIndex];
+  const total = cat.questions.length;
+
+  let hops = '';
+  for(let i=0;i<total;i++){
+    let cls = 'hop';
+    if(i < state.qIndex) cls += ' done';
+    else if(i === state.qIndex) cls += ' current';
+    hops += `<div class="${cls}"></div>`;
+  }
+
+  let answered = state.selected !== null;
+  let optionsHtml = q.options.map((opt, idx) => {
+    let cls = 'option';
+    if(answered){
+      if(idx === q.correct) cls += ' correct';
+      else if(idx === state.selected) cls += ' wrong';
+    } else if(idx === state.selected){
+      cls += ' selected';
+    }
+    let letter = String.fromCharCode(65+idx);
+    return `<button class="${cls}" ${answered?'disabled':''} onclick="selectOption(${idx})">
+      <span class="opt-letter">${letter}</span>${opt}
+    </button>`;
+  }).join('');
+
+  let explainHtml = '';
+  if(answered){
+    let isCorrect = state.selected === q.correct;
+    explainHtml = `<div class="explain-box ${isCorrect?'':'wrong-box'}">
+      <div class="explain-label ${isCorrect?'ok':'no'}">${isCorrect?'정답입니다':'오답입니다 — 정답: '+q.options[q.correct]}</div>
+      ${q.explanation}
+    </div>
+    <button class="next-btn" onclick="nextQuestion()">${state.qIndex < total-1 ? '다음 문제' : '결과 보기'}</button>`;
+  }
+
+  let hintHtml = '';
+  if(q.hint && !answered){
+    hintHtml = `<div class="hint-row">
+      <button class="hint-btn" onclick="toggleHint()">${state.showHint?'힌트 숨기기':'힌트 보기'}</button>
+      ${state.showHint ? `<div class="hint-text">${q.hint}</div>` : ''}
+    </div>`;
+  }
+
+  app.innerHTML = `
+    <div class="quiz-top">
+      <button class="back-btn" onclick="goHome()">← 목록</button>
+      <span class="qcount">${state.qIndex+1} / ${total}</span>
+    </div>
+    <div class="hop-trail">${hops}</div>
+    <div class="qcard">
+      <div class="qprompt">${q.prompt}</div>
+      ${optionsHtml}
+      ${hintHtml}
+      ${explainHtml}
+    </div>
+  `;
+}
+
+function selectOption(idx){
+  if(state.selected !== null) return;
+  state.selected = idx;
+  state.answers.push(idx === DATA.categories[state.catIndex].questions[state.qIndex].correct);
+  render();
+}
+
+function toggleHint(){
+  state.showHint = !state.showHint;
+  render();
+}
+
+function nextQuestion(){
+  const cat = DATA.categories[state.catIndex];
+  if(state.qIndex < cat.questions.length - 1){
+    state.qIndex++;
+    state.selected = null;
+    state.showHint = false;
+    render();
+  } else {
+    finishQuiz();
+  }
+}
+
+function finishQuiz(){
+  const cat = DATA.categories[state.catIndex];
+  const score = state.answers.filter(a=>a).length;
+  const prev = progress[state.catIndex] || {best:0};
+  progress[state.catIndex] = { best: Math.max(prev.best||0, score), last: score, total: cat.questions.length };
+  saveProgress(progress);
+  state.screen = 'result';
+  render();
+}
+
+function renderResult(){
+  const cat = DATA.categories[state.catIndex];
+  const total = cat.questions.length;
+  const score = state.answers.filter(a=>a).length;
+  const pct = Math.round((score/total)*100);
+
+  let wrongItems = [];
+  cat.questions.forEach((q, i) => {
+    if(state.answers[i] === false){
+      wrongItems.push(`<div class="wrong-item">
+        <div class="wq">${q.prompt}</div>
+        <div class="wa">정답: ${q.options[q.correct]}</div>
+      </div>`);
+    }
+  });
+  let wrongHtml = wrongItems.length ? `<div class="wrong-list"><h3>틀린 문제 (${wrongItems.length})</h3>${wrongItems.join('')}</div>` : '';
+
+  app.innerHTML = `
+    <div class="result-wrap">
+      <div class="result-score">${score}<span style="color:var(--muted);font-size:28px">/${total}</span></div>
+      <div class="result-label">${cat.title} · 정답률 ${pct}%</div>
+      <div class="result-bar"><div class="result-bar-fill" style="width:${pct}%"></div></div>
+      <div class="result-actions">
+        <button class="btn-primary" onclick="startCategory(${state.catIndex})">다시 풀기</button>
+        <button class="btn-secondary" onclick="goHome()">세트 목록으로</button>
+      </div>
+      ${wrongHtml}
+    </div>
+  `;
+}
+
+function goHome(){
+  state.screen = 'home';
+  render();
+}
+
+function resetAllProgress(){
+  if(confirm('모든 세트의 최고 기록을 초기화할까요?')){
+    progress = {};
+    saveProgress(progress);
+    render();
+  }
+}
+
+render();
+</script>
+</body>
+</html>
