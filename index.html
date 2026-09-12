@@ -2,35 +2,233 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>라우팅 (대소문자 구분) - 명령어 퀴즈</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" as="style" crossorigin
+      href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.css">
 <style>
-  body { font-family: "Malgun Gothic", "Apple SD Gothic Neo", sans-serif; background:#f4f4f4; padding:20px; }
-  table { border-collapse: collapse; width: 100%; max-width: 1000px; margin: 0 auto; background:#fff; table-layout: fixed; }
-  caption { font-size: 22px; font-weight: bold; padding: 14px; border: 2px solid #000; border-bottom:none; }
-  td, th { border: 1px solid #333; text-align: center; vertical-align: middle; padding: 6px 8px; font-size: 13px; }
-  .vert { writing-mode: vertical-rl; font-weight: bold; width: 30px; }
-  .kr { color: #c0006e; font-size: 12px; }
-  .cmd { color: #c0006e; font-weight: bold; }
-  .blue { color:#1a4fcc; }
-  .exi { color:#1a4fcc; font-weight:bold; }
-  .spoiler {
-    background:#333; color:#333; border-radius:4px; padding:1px 4px;
-    cursor:pointer; user-select:none; transition:0.15s;
+  :root{
+    --bg:#EEF0EC;
+    --paper:#FFFFFF;
+    --ink:#1E2A22;
+    --ink-soft:#5B6B60;
+    --line:#2F4A3D;
+    --orange:#C1652B;
+    --blue:#2F6690;
+    --amber:#C99A2E;
+    --border:#D7DBD2;
   }
-  .spoiler.revealed { background:#e1e2e3; color:#1a4fcc }
-  .hint { font-size:10px; color:#888; margin-top:20px; text-align:center; }
 
-  .section-title { max-width:1000px; margin: 40px auto 14px; font-size:20px; font-weight:bold; border-bottom:3px solid #333; padding-bottom:8px; }
-  .prob { max-width:1000px; margin: 0 auto 18px; background:#fff; border:1px solid #ccc; border-radius:6px; padding:14px 18px; }
-  .prob-title { font-weight:bold; font-size:14px; margin-bottom:8px; }
-  .prob-context { color:#1a4fcc; font-size:12px; background:#f3f6ff; border-left:3px solid #1a4fcc; padding:6px 10px; margin-bottom:10px; white-space:pre-line; }
-  .cmd-block { font-family: Consolas, "Courier New", monospace; font-size:13px; line-height:1.9; }
-  .cmd-line { padding:1px 0; }
-  .cmd-line .kr { margin-left:6px; }
+  *{ box-sizing:border-box; }
+
+  body{
+    font-family:'Pretendard Variable','Pretendard','Malgun Gothic','Apple SD Gothic Neo',sans-serif;
+    background:var(--bg);
+    color:var(--ink);
+    margin:0;
+    padding:44px 18px 90px;
+    line-height:1.55;
+  }
+
+  /* ---------- top nav ---------- */
+  .top-nav{
+    max-width:900px;
+    margin:0 auto 28px;
+  }
+  .top-nav a{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    text-decoration:none;
+    font-family:'JetBrains Mono',monospace;
+    font-size:12.5px;
+    font-weight:500;
+    color:var(--paper);
+    background:var(--line);
+    padding:9px 16px;
+    border-radius:20px;
+    letter-spacing:.01em;
+    transition:background .15s ease;
+  }
+  .top-nav a::before{
+    content:"›_";
+    color:var(--amber);
+    font-weight:700;
+  }
+  .top-nav a:hover{ background:var(--orange); }
+
+  /* ---------- reference table ---------- */
+  table{
+    border-collapse:collapse;
+    width:100%;
+    max-width:900px;
+    margin:0 auto;
+    background:var(--paper);
+    table-layout:fixed;
+    border-radius:12px;
+    overflow:hidden;
+    box-shadow:0 1px 0 var(--border), 0 12px 24px -18px rgba(30,42,34,.35);
+  }
+  caption{
+    font-family:'Pretendard Variable',sans-serif;
+    font-size:19px;
+    font-weight:700;
+    padding:16px 20px;
+    background:var(--line);
+    color:var(--paper);
+    text-align:left;
+    letter-spacing:.01em;
+    caption-side:top;
+  }
+  td, th{
+    border:1px solid var(--border);
+    text-align:center;
+    vertical-align:middle;
+    padding:7px 8px;
+    font-size:12.5px;
+  }
+  .vert{
+    writing-mode:vertical-rl;
+    font-weight:700;
+    width:30px;
+    color:var(--paper);
+    letter-spacing:.05em;
+  }
+  tbody tr:nth-child(1) td.vert{ background:var(--orange); }
+  tbody tr:nth-child(2) td.vert{ background:var(--blue); }
+
+  .kr{ color:var(--blue); font-size:11.5px; }
+  .cmd{ color:var(--orange); font-weight:700; }
+  .blue{ color:var(--blue); }
+  .exi{
+    color:var(--paper);
+    background:var(--ink-soft);
+    font-weight:700;
+    font-family:'JetBrains Mono',monospace;
+    font-size:11px;
+  }
+
+  .spoiler{
+    display:inline-block;
+    background:#33443a;
+    color:#33443a;
+    border-radius:4px;
+    padding:1px 6px;
+    cursor:pointer;
+    user-select:none;
+    transition:.15s;
+    font-family:'JetBrains Mono',monospace;
+  }
+  .spoiler.revealed{
+    background:var(--amber);
+    color:var(--ink);
+  }
+
+  .hint{
+    font-family:'JetBrains Mono',monospace;
+    font-size:11px;
+    color:var(--ink-soft);
+    margin-top:36px;
+    text-align:center;
+  }
+
+  /* ---------- practice problems ---------- */
+  .section-title{
+    max-width:900px;
+    margin:64px auto 20px;
+    font-family:'Pretendard Variable',sans-serif;
+    font-size:19px;
+    font-weight:700;
+    color:var(--line);
+    border-bottom:3px solid var(--line);
+    padding-bottom:10px;
+  }
+
+  .prob{
+    max-width:900px;
+    margin:0 auto 20px;
+    background:var(--paper);
+    border:1px solid var(--border);
+    border-radius:10px;
+    overflow:hidden;
+    box-shadow:0 1px 0 var(--border);
+  }
+  .prob-title{
+    font-weight:600;
+    font-size:14px;
+    padding:15px 18px 10px;
+    color:var(--ink);
+  }
+  .prob-context{
+    font-family:'JetBrains Mono',monospace;
+    font-size:11.5px;
+    color:var(--blue);
+    background:#EAF2F6;
+    border-left:3px solid var(--blue);
+    margin:0 18px 14px;
+    padding:9px 12px;
+    white-space:pre-line;
+    border-radius:0 4px 4px 0;
+  }
+  .prob-context .spoiler,
+  .prob-context ul .spoiler{
+    background:#33443a;
+    color:#33443a;
+  }
+  .prob-context ul{ margin:6px 0 0; padding-left:18px; }
+  .prob-context li{ margin:3px 0; }
+
+  .cmd-block{
+    background:var(--ink);
+    padding:16px 18px 18px;
+    font-family:'JetBrains Mono',monospace;
+    font-size:12.5px;
+    line-height:2;
+  }
+  .cmd-block::before{
+    content:"";
+    display:block;
+    width:8px;
+    height:8px;
+    border-radius:50%;
+    background:var(--orange);
+    box-shadow:16px 0 0 var(--amber), 32px 0 0 var(--blue);
+    margin-bottom:14px;
+  }
+  .cmd-line{
+    color:#E7E3D8;
+    padding:1px 0;
+  }
+  .cmd-line .kr{
+    color:#93A69A;
+    font-size:11px;
+    margin-left:8px;
+  }
+  .cmd-block .spoiler{
+    background:rgba(255,255,255,.12);
+    color:rgba(255,255,255,.12);
+  }
+  .cmd-block .spoiler.revealed{
+    background:var(--amber);
+    color:var(--ink);
+  }
+
+  @media (max-width:640px){
+    td, th{ font-size:11px; padding:5px 6px; }
+    caption{ font-size:17px; }
+    .prob-title{ font-size:13px; }
+  }
 </style>
 </head>
 <body>
-<a href="./quiz.html">quiz</a>
+
+<div class="top-nav">
+  <a href="./quiz.html"><span>quiz 풀러 가기</span></a>
+</div>
+
 <table>
 <caption>라우팅 (대소문자 구분)</caption>
 <tbody>
