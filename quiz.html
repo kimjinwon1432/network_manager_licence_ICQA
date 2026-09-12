@@ -186,13 +186,14 @@ function expandConcatenated(tokens){
 function lineMatches(lineDef, userRaw){
   const userClean = normalizeLine(stripPrompt(userRaw));
   const canonTokens = lineDef.canonical.split(' ');
+  const canonTokensLower = canonTokens.map(t => t.toLowerCase());
   let userTokens = userClean.length ? userClean.split(' ') : [];
-  if(userTokens.length !== canonTokens.length){
+  if(userTokens.length !== canonTokensLower.length){
     userTokens = expandConcatenated(userTokens);
   }
-  if(userTokens.length !== canonTokens.length) return false;
-  for(let i=0;i<canonTokens.length;i++){
-    if(!tokenMatches(userTokens[i], canonTokens[i], lineDef.mask[i])) return false;
+  if(userTokens.length !== canonTokensLower.length) return false;
+  for(let i=0;i<canonTokensLower.length;i++){
+    if(!tokenMatches(userTokens[i], canonTokensLower[i], lineDef.mask[i])) return false;
   }
   return true;
 }
